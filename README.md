@@ -50,7 +50,7 @@ psql> CREATE TABLE animals (
 ```
 
 Let's suppose the following file is present in s3 at `s3://my-bucket/samples/myfile.csv`:
-```
+```csv
 name,age
 dog,12
 cat,15
@@ -83,6 +83,7 @@ s3_info | An aws_commons._s3_uri_1 composite type containing the bucket, file pa
 credentials | An aws_commons._aws_credentials_1 composite type containing the access key, secret key, session token credentials
 
 #### Example
+```postgresql
 psql> SELECT aws_commons.create_s3_uri(
    'my-bucket',
    'samples/myfile.csv',
@@ -113,6 +114,15 @@ psql> SELECT aws_s3.table_import_from_s3(
 ----------------------
                     4
 (1 row)
+
+psql> select * from animals;                                                                                                                          name   | age
+----------+-----
+ dog      |  12
+ cat      |  15
+ parrot   | 103
+ tortoise | 205
+(4 rows)
+```
 
 #### Using the function table_import_from_s3 with all the parameters
 
@@ -155,6 +165,13 @@ psql> SELECT aws_s3.table_import_from_s3(
     '<session_token>'
 );
 
+psql> select * from animals;                                                                                                                          name   | age
+----------+-----
+ dog      |  12
+ cat      |  15
+ parrot   | 103
+ tortoise | 205
+(4 rows)
 ```
  table_import_from_s3
 ----------------------
