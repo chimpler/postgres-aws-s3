@@ -35,6 +35,7 @@ Then install aws_s3:
     
 Then in Postgres:
 ```postgresql
+psql> CREATE EXTENSION plpythonu;
 psql> CREATE EXTENSION aws_s3;
 ``` 
     
@@ -71,7 +72,8 @@ aws_s3.table_import_from_s3 (
 )
 ```
 
-In this signature, the s3_uri and aws_credentials objects will need to be created first:
+Using this signature, the s3_uri and aws_credentials objects will need to be created first:
+
 Parameter | Description
 ----------|------------
 table_name | the name of the table 
