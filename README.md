@@ -1,6 +1,6 @@
-# aws_s3
+# postgres-aws-s3
 
-Starting on Postgres version 11.1, AWS RDS added [support](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.S3Import.html#USER_PostgreSQL.S3Import.FileFormats) for S3 import.
+Starting on Postgres version 11.1, AWS RDS added [support](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.S3Import.html#USER_PostgreSQL.S3Import.FileFormats) for S3 import using the extension `aws_s3`.
 It allows to import data from S3 within Postgres using the function `aws_s3.table_import_from_s3`.
 
 In order to support development either on RDS or locally, we implemented our own `aws_s3` extension that is similar to
@@ -12,9 +12,9 @@ On MacOS, this can be done as follows:
 
     sudo /usr/bin/easy_install boto3
 
-Then clone the repository `aws_s3``:
+Then clone the repository `postgres-aws-s3`:
 
-    git clone git@github.com:chimpler/aws_s3
+    git clone git@github.com:chimpler/postgres-aws-s3
     
 Make sure that `pg_config` can be run:
 ```
@@ -30,7 +30,7 @@ LIBDIR = /Applications/Postgres.app/Contents/Versions/11/lib
 ...
 ```
 
-Then install `aws_s3`:
+Then install `postgres-aws-s3`:
 
     make install
     
