@@ -3,7 +3,7 @@
 Starting on Postgres version 11.1, AWS RDS added [support](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.S3Import.html#USER_PostgreSQL.S3Import.FileFormats) for S3 import.
 It allows to import data from S3 within Postgres using the function `aws_s3.table_import_from_s3`.
 
-In order to support development either on RDS or locally, we implemented our own aws_s3 extension that will be similar to
+In order to support development either on RDS or locally, we implemented our own `aws_s3` extension that is similar to
 the one provided in RDS. It was implemented in Python using the boto3 library.
 
 ## Installation
@@ -12,7 +12,8 @@ On MacOS, this can be done as follows:
 
     sudo /usr/bin/easy_install boto3
 
-Then install the extension:
+Then clone the repository `aws_s3``:
+
     git clone git@github.com:chimpler/aws_s3
     
 Make sure that `pg_config` can be run:
@@ -29,11 +30,11 @@ LIBDIR = /Applications/Postgres.app/Contents/Versions/11/lib
 ...
 ```
 
-Then install aws_s3:
+Then install `aws_s3`:
 
     make install
     
-Then in Postgres:
+Finally in Postgres:
 ```postgresql
 psql> CREATE EXTENSION plpythonu;
 psql> CREATE EXTENSION aws_s3;
@@ -72,7 +73,7 @@ aws_s3.table_import_from_s3 (
 )
 ```
 
-Using this signature, the s3_uri and aws_credentials objects will need to be created first:
+Using this signature, the `s3_uri` and `aws_credentials` objects will need to be created first:
 
 Parameter | Description
 ----------|------------
@@ -115,7 +116,8 @@ psql> SELECT aws_s3.table_import_from_s3(
                     4
 (1 row)
 
-psql> select * from animals;                                                                                                                          name   | age
+psql> select * from animals;
+   name   | age
 ----------+-----
  dog      |  12
  cat      |  15
@@ -172,7 +174,7 @@ psql> SELECT aws_s3.table_import_from_s3(
 
 psql> select * from animals;
 
- name   | age
+   name   | age
 ----------+-----
  dog      |  12
  cat      |  15
