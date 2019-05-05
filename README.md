@@ -39,6 +39,12 @@ Finally in Postgres:
 psql> CREATE EXTENSION plpythonu;
 psql> CREATE EXTENSION aws_s3;
 ``` 
+
+If you already have an old version of `aws_s3` installed, you might want to drop and recreate the extension:
+```postgresql
+psql> DROP EXTENSION aws_s3;
+psql> CREATE EXTENSION aws_s3;
+```
     
 ## Using aws_s3
 
