@@ -95,20 +95,20 @@ psql> \echo :s3_uri
 (my-bucket,samples/myfile.csv,us-east-1)
 
 psql> SELECT aws_commons.create_aws_credentials(
-'<my_access_id>',
-'<my_secret_key>',
-'<session_token>'
+   '<my_access_id>',
+   '<my_secret_key>',
+   '<session_token>'
 ) AS credentials \gset
 
 psql> \echo :credentials
 (<my_access_id>,<my_secret_key>,<session_token>)
 
 psql> SELECT aws_s3.table_import_from_s3(
-'animals',
-'',
-'(FORMAT CSV, DELIMITER '','', HEADER 1)',
-:'s3_uri',
-:'credentials'
+   'animals',
+   '',
+   '(FORMAT CSV, DELIMITER '','', HEADER true)',
+   :'s3_uri',
+   :'credentials'
 )
 
  table_import_from_s3
@@ -159,7 +159,7 @@ credentials | An aws_commons._aws_credentials_1 composite type containing the ac
 psql> SELECT aws_s3.table_import_from_s3(
     'animals',
     '',
-    '(FORMAT CSV, DELIMITER '','', HEADER 1)',
+    '(FORMAT CSV, DELIMITER '','', HEADER true)',
     'my-bucket',
     'samples/myfile.csv',
     '<my_access_id>',
