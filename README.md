@@ -165,7 +165,14 @@ psql> SELECT aws_s3.table_import_from_s3(
     '<session_token>'
 );
 
-psql> select * from animals;                                                                                                                          name   | age
+ table_import_from_s3
+----------------------
+                    4
+(1 row)
+
+psql> select * from animals;
+
+ name   | age
 ----------+-----
  dog      |  12
  cat      |  15
@@ -173,10 +180,6 @@ psql> select * from animals;                                                    
  tortoise | 205
 (4 rows)
 ```
- table_import_from_s3
-----------------------
-                    4
-(1 row)
 
 ### Configuration
 
