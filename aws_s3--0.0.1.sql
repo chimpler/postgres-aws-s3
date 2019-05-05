@@ -66,9 +66,7 @@ AS $$
     boto3 = cache_import('boto3')
     tempfile = cache_import('tempfile')
 
-    plan = plpy.prepare('select current_setting($1, true)', ['TEXT'])
-    buffer_chunk_size = plan.execute(['aws_s3.buffer_chunk_size'])[0]['current_setting'] or 131072
-    buffer_num_lines = plan.execute(['aws_s3.buffer_num_lines'])[0]['current_setting'] or 10000
+    plan = plpy.prepare('select current_setting($1, true)::int', ['TEXT'])
 
     s3 = boto3.client(
         's3',
@@ -78,27 +76,17 @@ AS $$
         region_name=region
     )
 
-    def copy_rows(fd):
+    with tempfile.NamedTemporaryFile() as fd:
+        s3.download_fileobj(bucket, file_path, fd)
         fd.flush()
-        res = plpy.execute("COPY {table_name} {column_list} FROM '{filename}' {options};".format(
+        res = plpy.execute("COPY {table_name} {column_list} FROM {filename} {options};".format(
                 table_name=table_name,
+                filename=plpy.quote_literal(fd.name),
                 column_list=column_list,
-                filename=fd.name,
                 options=options
             )
         )
-        fd.seek(0)
-
-    lines = s3.get_object(Bucket=bucket, Key=file_path)['Body'].iter_lines(chunk_size=buffer_chunk_size)
-    with tempfile.NamedTemporaryFile() as fd:
-        for line_num, line in enumerate(lines):
-            if (line_num + 1) % buffer_num_lines == 0:
-                copy_rows(fd)
-
-            fd.write(line + '\n')
-
-        copy_rows(fd)
-        return line_num
+        return res.nrows()
 $$;
 
 --

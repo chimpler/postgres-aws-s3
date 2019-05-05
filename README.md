@@ -182,35 +182,3 @@ psql> select * from animals;
  tortoise | 205
 (4 rows)
 ```
-
-### Configuration
-
-One can tune some parameters such as:
-* `aws_s3.buffer_chunk_size` (chunk size when reading data from S3). Default is 262,144 bytes.
-* `aws_s3.buffer_lines` (number of lines to be imported in the table at each time). Default is 1,000 lines.
-
-One can update these parameters at the session level or at database level.
-
-At the session level:
-```postgresql
-SET aws_s3.buffer_chunk_size = 1000000;
-SET aws_s3.buffer_num_lines = 1000;
-```
-
-At the database level:
-```postgresql
-ALTER DATABASE db SET aws_s3.buffer_chunk_size = 1000000;
-ALTER DATABASE db SET aws_s3.buffer_num_lines = 1000;
-
--- Then reopen postgres
-```
-
-Then to check the values of the settings:
-```postgresql
-SELECT current_setting('aws_s3.buffer_chunk_size', true) AS chunk_size, current_setting('aws_s3.buffer_num_lines', true) as num_lines;
-
- chunk_size | num_lines
-------------+-----------
- 1000000    | 1000
-(1 row)
-```
