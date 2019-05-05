@@ -182,3 +182,8 @@ psql> select * from animals;
  tortoise | 205
 (4 rows)
 ```
+
+## Support for gzip files
+
+If the file has the metadata `Content-Encoding=gzip` in S3, then the file will be automatically unzipped prior to be copied to the table.
+One can update the metadata in S3 by following the instructions described [here](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-object-metadata.html).

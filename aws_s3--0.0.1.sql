@@ -65,6 +65,8 @@ AS $$
 
     boto3 = cache_import('boto3')
     tempfile = cache_import('tempfile')
+    gzip = cache_import('gzip')
+    shutil = cache_import('shutil')
 
     plan = plpy.prepare('select current_setting($1, true)::int', ['TEXT'])
 
@@ -76,8 +78,18 @@ AS $$
         region_name=region
     )
 
+    response = s3.head_object(Bucket=bucket, Key=file_path)
+    content_encoding = response.get('ContentEncoding')
+
     with tempfile.NamedTemporaryFile() as fd:
-        s3.download_fileobj(bucket, file_path, fd)
+        if content_encoding and content_encoding.lower() == 'gzip':
+            with tempfile.NamedTemporaryFile() as gzfd:
+                s3.download_fileobj(bucket, file_path, gzfd)
+                gzfd.flush()
+                gzfd.seek(0)
+                shutil.copyfileobj(gzip.GzipFile(fileobj=gzfd, mode='rb'), fd)
+        else:
+                s3.download_fileobj(bucket, file_path, fd)
         fd.flush()
         res = plpy.execute("COPY {table_name} {column_list} FROM {filename} {options};".format(
                 table_name=table_name,
