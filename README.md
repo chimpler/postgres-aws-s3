@@ -197,3 +197,8 @@ One can update the metadata in S3 by following the instructions described [here]
 ## Support custom S3 endpoint URL
 
 If you need to change S3 endpoint URL set environment variable `S3_ENDPOINT_URL`, for example, to use local S3 server for development.
+
+## Contributors
+
+* Oleh Rybalchenko ([@oyarushe](https://github.com/oyarushe))
+* Stephan Huiser ([@huiser](https://github.com/huiser))
