@@ -63,6 +63,8 @@ AS $$
             module_cache[module_name] = _module
             return _module
 
+    os = cache_import('os')
+
     boto3 = cache_import('boto3')
     tempfile = cache_import('tempfile')
     gzip = cache_import('gzip')
@@ -75,7 +77,8 @@ AS $$
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
         aws_session_token=session_token,
-        region_name=region
+        region_name=region,
+        endpoint_url=os.environ.get('S3_ENDPOINT_URL')
     )
 
     response = s3.head_object(Bucket=bucket, Key=file_path)

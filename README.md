@@ -193,3 +193,7 @@ psql> select * from animals;
 
 If the file has the metadata `Content-Encoding=gzip` in S3, then the file will be automatically unzipped prior to be copied to the table.
 One can update the metadata in S3 by following the instructions described [here](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-object-metadata.html).
+
+## Support custom S3 endpoint URL
+
+If you need to change S3 endpoint URL set environment variable `S3_ENDPOINT_URL`, for example, to use local S3 server for development.
