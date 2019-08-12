@@ -200,5 +200,5 @@ If you need to change S3 endpoint URL set environment variable `S3_ENDPOINT_URL`
 
 ## Contributors
 
-* Oleh Rybalchenko ([@oyarushe](https://github.com/oyarushe))
+* Oleksandr Yarushevskyi ([@oyarushe](https://github.com/oyarushe))
 * Stephan Huiser ([@huiser](https://github.com/huiser))
