@@ -1,3 +1,7 @@
+v1.0.2
+======
+* Made column_list as optional parameter #6 [@oyarushe]
+
 v1.0.1
 ======
 
