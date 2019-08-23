@@ -94,10 +94,11 @@ AS $$
         else:
                 s3.download_fileobj(bucket, file_path, fd)
         fd.flush()
-        res = plpy.execute("COPY {table_name} ({column_list}) FROM {filename} {options};".format(
+        formatted_column_list = "({column_list})".format(column_list=column_list) if column_list else ''
+        res = plpy.execute("COPY {table_name} {formatted_column_list} FROM {filename} {options};".format(
                 table_name=table_name,
                 filename=plpy.quote_literal(fd.name),
-                column_list=column_list,
+                formatted_column_list=formatted_column_list,
                 options=options
             )
         )
@@ -159,10 +160,11 @@ AS $$
         else:
                 s3.download_fileobj(bucket, file_path, fd)
         fd.flush()
-        res = plpy.execute("COPY {table_name} ({column_list}) FROM {filename} {options};".format(
+        formatted_column_list = "({column_list})".format(column_list=column_list) if column_list else ''
+        res = plpy.execute("COPY {table_name} {formatted_column_list} FROM {filename} {options};".format(
                 table_name=table_name,
                 filename=plpy.quote_literal(fd.name),
-                column_list=column_list,
+                formatted_column_list=formatted_column_list,
                 options=options
             )
         )
