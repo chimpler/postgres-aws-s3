@@ -38,6 +38,9 @@ AS $$
 
     s3 = boto3.client('s3')
 
+    # @ symbols are being interpolated as %40, which makes
+    # the head_object call 404.
+    # Replace this typo for now.
     formatted_file_path = file_path.replace('%40', '@')
     response = s3.head_object(Bucket=bucket, Key=formatted_file_path)
     content_encoding = response.get('ContentEncoding')
