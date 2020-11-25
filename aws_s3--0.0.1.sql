@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION aws_commons.create_s3_uri(
    s3_key text,
    aws_region text
 ) RETURNS aws_commons._s3_uri_1
-LANGUAGE plpythonu IMMUTABLE
+LANGUAGE plpython3u IMMUTABLE
 AS $$
     return (s3_bucket, s3_key, aws_region)
 $$;
@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION aws_commons.create_aws_credentials(
     secret_key text,
     session_token text
 ) RETURNS aws_commons._aws_credentials_1
-LANGUAGE plpythonu IMMUTABLE
+LANGUAGE plpython3u IMMUTABLE
 AS $$
     return (access_key, secret_key, session_token)
 $$;
@@ -49,7 +49,7 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3 (
    secret_key text,
    session_token text
 ) RETURNS int
-LANGUAGE plpythonu
+LANGUAGE plpython3u
 AS $$
     def cache_import(module_name):
         module_cache = SD.get('__modules__', {})
@@ -82,10 +82,10 @@ AS $$
     )
 
     response = s3.head_object(Bucket=bucket, Key=file_path)
-    content_encoding = response.get('ContentEncoding')
+    content_encoding = response.get('ContentType')
 
     with tempfile.NamedTemporaryFile() as fd:
-        if content_encoding and content_encoding.lower() == 'gzip':
+        if content_encoding and content_encoding.lower() == 'application/gzip':
             with tempfile.NamedTemporaryFile() as gzfd:
                 s3.download_fileobj(bucket, file_path, gzfd)
                 gzfd.flush()
@@ -117,7 +117,7 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3 (
    session_token text,
    endpoint_url text
 ) RETURNS int
-LANGUAGE plpythonu
+LANGUAGE plpython3u
 AS $$
     def cache_import(module_name):
         module_cache = SD.get('__modules__', {})
@@ -182,7 +182,7 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3(
    s3_info aws_commons._s3_uri_1,
    credentials aws_commons._aws_credentials_1
 ) RETURNS INT
-LANGUAGE plpythonu
+LANGUAGE plpython3u
 AS $$
     plan = plpy.prepare(
         'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9) AS num_rows',
@@ -211,7 +211,7 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3(
    credentials aws_commons._aws_credentials_1,
    endpoint_url text
 ) RETURNS INT
-LANGUAGE plpythonu
+LANGUAGE plpython3u
 AS $$
     plan = plpy.prepare(
         'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9) AS num_rows',
