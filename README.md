@@ -309,6 +309,7 @@ If you set the AWS credentials:
 psql> SET aws_s3.aws_s3.access_key_id TO 'dummy';
 psql> SET aws_s3.aws_s3.secret_key TO 'dummy';
 psql> SET aws_s3.session_token TO 'dummy';
+```
 
 You can omit the credentials.
 
