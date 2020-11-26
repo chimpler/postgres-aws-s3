@@ -1,0 +1,31 @@
+version: "3"
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: mock-servers/postgres/Dockerfile
+    ports:
+      - "15432:5432"
+    env_file: .env
+    volumes:
+      - $PWD/mock-servers/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - $PWD/mock-servers/postgres/data:/var/lib/postgresql/data
+  localstack:
+    image: localstack/localstack
+    hostname: localstack
+    ports:
+      - "4566:4566"
+      - "9090:9090"
+    env_file:
+      - .env
+    environment:
+      SERVICES: "s3"
+      DEBUG: "true"
+      DATA_DIR: mock-servers/localstack/data
+      PORT_WEB_UI: 9090
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - $PWD/mock-servers/localstack/samples:/tmp/samples
+      - $PWD/mock-servers/localstack/docker-entrypoint-initaws.d:/docker-entrypoint-initaws.d

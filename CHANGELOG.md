@@ -1,3 +1,7 @@
+v1.0.4
+======
+* Added support for aws_s3.query_export_to_s3
+
 v1.0.3
 ======
 * Fix for current postgres 12.* and s3 #11 [@phileon]

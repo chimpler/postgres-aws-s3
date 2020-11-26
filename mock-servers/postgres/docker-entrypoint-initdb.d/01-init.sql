@@ -1,0 +1,2 @@
+CREATE EXTENSION plpython3u;
+CREATE EXTENSION aws_s3;
