@@ -1,6 +1,6 @@
 v1.0.4
 ======
-* Added support for aws_s3.query_export_to_s3
+* Added support for aws_s3.query_export_to_s3 #12 [@darthbear]
 
 v1.0.3
 ======

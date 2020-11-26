@@ -102,7 +102,7 @@ psql> SELECT aws_commons.create_s3_uri(
 ) AS s3_uri \gset
 
 psql> \echo :s3_uri
-(my-bucket,samples/myfile.csv,us-east-1)
+(test-bucket,animals.csv,us-east-1)
 
 psql> SELECT aws_commons.create_aws_credentials(
    '<my_access_id>',
@@ -134,6 +134,25 @@ psql> select * from animals;
  parrot   | 103
  tortoise | 205
 (4 rows)
+```
+
+You can also call the function as:
+```
+psql> SELECT aws_s3.table_import_from_s3(
+   'animals',
+   '',
+   '(FORMAT CSV, DELIMITER '','', HEADER true)',
+   aws_commons.create_s3_uri(
+      'test-bucket',
+      'animals.csv',
+      'us-east-1'
+   ),
+   aws_commons.create_aws_credentials(
+      '<my_access_id>',
+      '<my_secret_key>',
+      '<session_token>'
+   )
+);
 ```
 
 #### Using the function table_import_from_s3 with all the parameters
@@ -173,7 +192,7 @@ psql> SELECT aws_s3.table_import_from_s3(
     '',
     '(FORMAT CSV, DELIMITER '','', HEADER true)',
     'test-bucket',
-    'samples/myfile.csv',
+    'animals.csv',
     'us-east-1',
     '<my_access_id>',
     '<my_secret_key>',
@@ -284,7 +303,7 @@ psql> SELECT * FROM aws_s3.query_export_to_s3(
    ),
    options := 'FORMAT CSV, DELIMITER '','', HEADER true'
 );
-
+```
 If you set the AWS credentials:
 ```
 psql> SET aws_s3.aws_s3.access_key_id TO 'dummy';
