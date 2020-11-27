@@ -1,7 +1,6 @@
 # postgres-aws-s3
 
-Starting on Postgres version 11.1, AWS RDS added [support](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.S3Import.html#USER_PostgreSQL.S3Import.FileFormats) for S3 import using the extension `aws_s3`.
-It allows to import data from S3 within Postgres using the function `aws_s3.table_import_from_s3`.
+Starting on Postgres version 11.1, AWS RDS added [support](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.S3Import.html#USER_PostgreSQL.S3Import.FileFormats) for S3 import using the extension `aws_s3`. It allows to import data from S3 within Postgres using the function `aws_s3.table_import_from_s3` and export the data to S3 using the function `aws_s3.query_export_to_s3`.
 
 In order to support development either on RDS or locally, we implemented our own `aws_s3` extension that is similar to
 the one provided in RDS. It was implemented in Python using the boto3 library.
