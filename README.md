@@ -35,7 +35,7 @@ Then install `postgres-aws-s3`:
     
 Finally in Postgres:
 ```postgresql
-psql> CREATE EXTENSION plpythonu;
+psql> CREATE EXTENSION plpython3u;
 psql> CREATE EXTENSION aws_s3;
 ``` 
 
