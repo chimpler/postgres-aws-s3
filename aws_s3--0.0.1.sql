@@ -90,9 +90,10 @@ AS $$
 
     response = s3.head_object(Bucket=bucket, Key=file_path)
     content_encoding = response.get('ContentEncoding')
+    user_content_encoding = response.get('x-amz-meta-content-encoding')
 
     with tempfile.NamedTemporaryFile() as fd:
-        if content_encoding and content_encoding.lower() == 'gzip':
+        if (content_encoding and content_encoding.lower() == 'gzip') or (user_content_encoding and user_content_encoding.lower() == 'gzip'):
             with tempfile.NamedTemporaryFile() as gzfd:
                 s3.download_fileobj(bucket, file_path, gzfd)
                 gzfd.flush()
