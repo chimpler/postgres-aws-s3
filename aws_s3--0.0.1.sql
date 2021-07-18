@@ -82,24 +82,25 @@ AS $$
         'endpoint_url': endpoint_url if endpoint_url else default_aws_settings.get('endpoint_url')
     }
 
-    s3 = boto3.client(
+    s3 = boto3.resource(
         's3',
         region_name=region,
         **aws_settings
     )
 
-    response = s3.head_object(Bucket=bucket, Key=file_path)
+    obj = s3.Object(bucket, file_path)
+    response = obj.get()
     content_encoding = response.get('ContentEncoding')
+    body = response['Body']
 
     with tempfile.NamedTemporaryFile() as fd:
         if content_encoding and content_encoding.lower() == 'gzip':
-            with tempfile.NamedTemporaryFile() as gzfd:
-                s3.download_fileobj(bucket, file_path, gzfd)
-                gzfd.flush()
-                gzfd.seek(0)
-                shutil.copyfileobj(gzip.GzipFile(fileobj=gzfd, mode='rb'), fd)
+            with gzip.GzipFile(fileobj=body) as gzipfile:
+                while fd.write(gzipfile.read(204800)):
+                    pass
         else:
-                s3.download_fileobj(bucket, file_path, fd)
+            while fd.write(body.read(204800)):
+                pass
         fd.flush()
         formatted_column_list = "({column_list})".format(column_list=column_list) if column_list else ''
         res = plpy.execute("COPY {table_name} {formatted_column_list} FROM {filename} {options};".format(
