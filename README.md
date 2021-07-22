@@ -6,7 +6,7 @@ In order to support development either on RDS or locally, we implemented our own
 the one provided in RDS. It was implemented in Python using the boto3 library.
 
 ## Installation
-Make sure boto3 is installed using the default Python 2 installed on your computer.
+Make sure boto3 is installed using the default Python 3 installed on your computer.
 On MacOS, this can be done as follows:
 
     sudo /usr/bin/easy_install boto3
@@ -35,7 +35,7 @@ Then install `postgres-aws-s3`:
     
 Finally in Postgres:
 ```postgresql
-psql> CREATE EXTENSION plpythonu;
+psql> CREATE EXTENSION plpython3u;
 psql> CREATE EXTENSION aws_s3;
 ``` 
 
@@ -395,7 +395,7 @@ psql> CREATE EXTENSION aws_s3;
 Set the endpoint url and the aws keys to use s3 (in localstack you can set the aws creds to any non-empty string):
 ```
 psql> SET aws_s3.endpoint_url TO 'http://localstack:4566';
-psql> SET aws_s3.s3.aws_access_key_id TO 'dummy';
+psql> SET aws_s3.aws_access_key_id TO 'dummy';
 psql> SET aws_s3.secret_access_key TO 'dummy';
 ```
 
