@@ -221,8 +221,8 @@ psql> SET aws_s3.endpoint_url TO 'http://localstack:4566';
 
 You can also set the AWS credentials:
 ```
-psql> SET aws_s3.aws_s3.access_key_id TO 'dummy';
-psql> SET aws_s3.aws_s3.secret_key TO 'dummy';
+psql> SET aws_s3.access_key_id TO 'dummy';
+psql> SET aws_s3.secret_key TO 'dummy';
 psql> SET aws_s3.session_token TO 'dummy';
 ```
 and then omit them from the function calls.
@@ -456,8 +456,11 @@ psql> SELECT * FROM new_animals;
 * Oleksandr Yarushevskyi ([@oyarushe](https://github.com/oyarushe))
 * Stephan Huiser ([@huiser](https://github.com/huiser))
 * Jan Griesel ([@phileon](https://github.com/phileon))
+* Matthew Painter ([@mjgp2](https://github.com/mjgp2))
+* Justin Leto ([@jleto](https://github.com/jleto))
 
 
 ## Thanks
 
 * Thomas Gordon Lowrey IV [@gordol](https://github.com/gordol)
+
