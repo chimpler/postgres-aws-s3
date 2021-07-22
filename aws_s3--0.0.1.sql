@@ -92,9 +92,10 @@ AS $$
     response = obj.get()
     content_encoding = response.get('ContentEncoding')
     body = response['Body']
+    user_content_encoding = response.get('x-amz-meta-content-encoding')
 
     with tempfile.NamedTemporaryFile() as fd:
-        if content_encoding and content_encoding.lower() == 'gzip':
+        if (content_encoding and content_encoding.lower() == 'gzip') or (user_content_encoding and user_content_encoding.lower() == 'gzip'):
             with gzip.GzipFile(fileobj=body) as gzipfile:
                 while fd.write(gzipfile.read(204800)):
                     pass
