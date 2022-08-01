@@ -219,6 +219,8 @@ AS $$
             size += len(buffer)
         fd.seek(0)
         s3.upload_fileobj(fd, bucket, file_path)
+        if 'HEADER TRUE' in options.upper():
+            num_lines -= 1
         yield (num_lines, 1, size)
 $$;
 
