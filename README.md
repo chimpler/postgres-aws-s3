@@ -91,7 +91,7 @@ table_name | the name of the table
 column_list | list of columns to copy
 options | options passed to the COPY command in Postgres
 s3_info | An aws_commons._s3_uri_1 composite type containing the bucket, file path and region information about the s3 object
-credentials | An aws_commons._aws_credentials_1 composite type containing the access key, secret key, session token credentials
+credentials | An aws_commons._aws_credentials_1 composite type containing the access key, secret key, session token credentials. To omit a value, set it `null`.
 endpoint_url | optional endpoint to use (e.g., `http://localhost:4566`)
 
 ##### Example
@@ -284,7 +284,7 @@ Parameter | Description
 ----------|------------
 query | query that returns the data to export
 s3_info | An aws_commons._s3_uri_1 composite type containing the bucket, file path and region information about the s3 object
-credentials | An aws_commons._aws_credentials_1 composite type containing the access key, secret key, session token credentials
+credentials | An aws_commons._aws_credentials_1 composite type containing the access key, secret key, session token credentials. To omit a value, set it `null`.
 options | options passed to the COPY command in Postgres
 endpoint_url | optional endpoint to use (e.g., `http://localhost:4566`)
 
@@ -316,7 +316,7 @@ You can omit the credentials.
 
 ##### Example
 
-#### Using the function table_import_from_s3 with all the parameters
+#### Using the function query_export_to_s3 with all the parameters
 ```
 aws_s3.query_export_to_s3(
     query text,    
