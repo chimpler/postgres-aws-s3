@@ -86,7 +86,7 @@ AS $$
     s3 = boto3.resource(
         's3',
         region_name=region,
-        config=boto3.session.Config(read_timeout={read_timeout}),
+        config=boto3.session.Config(read_timeout=read_timeout),
         **aws_settings
     )
 
@@ -218,7 +218,7 @@ AS $$
     s3 = boto3.client(
         's3',
         region_name=region,
-        config=boto3.session.Config(read_timeout={read_timeout}),
+        config=boto3.session.Config(read_timeout=read_timeout),
         **aws_settings
     )
 
