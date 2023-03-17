@@ -49,7 +49,6 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3 (
    secret_key text default null,
    session_token text default null,
    endpoint_url text default null,
-   content_encoding text default null,
    read_timeout integer default 60
 ) RETURNS int
 LANGUAGE plpython3u
@@ -109,9 +108,9 @@ AS $$
 
         for s3_object in s3_objects:
             response = s3_object.get()
-            content_encoding = content_encoding or response.get('ContentEncoding')
-            user_content_encoding = response.get('x-amz-meta-content-encoding')
+            content_encoding = response.get('ContentEncoding')
             body = response['Body']
+            user_content_encoding = response.get('x-amz-meta-content-encoding')
 
             with tempfile.NamedTemporaryFile() as fd:
                 if (content_encoding and content_encoding.lower() == 'gzip') or (user_content_encoding and user_content_encoding.lower() == 'gzip'):
@@ -145,15 +144,14 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3(
    s3_info aws_commons._s3_uri_1,
    credentials aws_commons._aws_credentials_1,
    endpoint_url text default null,
-   content_encoding text default null,
    read_timeout integer default 60
 ) RETURNS INT
 LANGUAGE plpython3u
 AS $$
 
     plan = plpy.prepare(
-        'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) AS num_rows',
-        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER']
+        'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) AS num_rows',
+        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER']
     )
     return plan.execute(
         [
@@ -167,7 +165,6 @@ AS $$
             credentials['secret_key'],
             credentials['session_token'],
             endpoint_url,
-            content_encoding,
             read_timeout
         ]
     )[0]['num_rows']
