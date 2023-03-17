@@ -91,30 +91,47 @@ AS $$
         **aws_settings
     )
 
-    obj = s3.Object(bucket, file_path)
-    response = obj.get()
-    content_encoding = content_encoding or response.get('ContentEncoding')
-    user_content_encoding = response.get('x-amz-meta-content-encoding')
-    body = response['Body']
-    
-    with tempfile.NamedTemporaryFile() as fd:
-        if (content_encoding and content_encoding.lower() == 'gzip') or (user_content_encoding and user_content_encoding.lower() == 'gzip'):
-            with gzip.GzipFile(fileobj=body) as gzipfile:
-                while fd.write(gzipfile.read(204800)):
-                    pass
-        else:
-            while fd.write(body.read(204800)):
-                pass
-        fd.flush()
-        formatted_column_list = "({column_list})".format(column_list=column_list) if column_list else ''
-        res = plpy.execute("COPY {table_name} {formatted_column_list} FROM {filename} {options};".format(
-                table_name=table_name,
-                filename=plpy.quote_literal(fd.name),
-                formatted_column_list=formatted_column_list,
-                options=options
-            )
-        )
-        return res.nrows()
+    formatted_column_list = "({column_list})".format(column_list=column_list) if column_list else ''
+    num_rows = 0
+
+    for file_path_item in file_path.split(","):
+        file_path_item = file_path_item.strip()
+        if not file_path_item:
+            continue
+
+        s3_objects = []
+        if file_path_item.endswith("/"): # Directory
+            bucket_objects = s3.Bucket(bucket).objects.filter(Prefix=file_path_item)
+            s3_objects = [bucket_object for bucket_object in bucket_objects]
+        else: # File
+            s3_object = s3.Object(bucket, file_path_item)
+            s3_objects = [s3_object]
+
+        for s3_object in s3_objects:
+            response = s3_object.get()
+            content_encoding = content_encoding or response.get('ContentEncoding')
+            user_content_encoding = response.get('x-amz-meta-content-encoding')
+            body = response['Body']
+
+            with tempfile.NamedTemporaryFile() as fd:
+                if (content_encoding and content_encoding.lower() == 'gzip') or (user_content_encoding and user_content_encoding.lower() == 'gzip'):
+                    with gzip.GzipFile(fileobj=body) as gzipfile:
+                        while fd.write(gzipfile.read(204800)):
+                            pass
+                else:
+                    while fd.write(body.read(204800)):
+                        pass
+                fd.flush()
+
+                res = plpy.execute("COPY {table_name} {formatted_column_list} FROM {filename} {options};".format(
+                        table_name=table_name,
+                        filename=plpy.quote_literal(fd.name),
+                        formatted_column_list=formatted_column_list,
+                        options=options
+                    )
+                )
+                num_rows += res.nrows()
+    return num_rows
 $$;
 
 --
