@@ -49,7 +49,8 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3 (
    secret_key text default null,
    session_token text default null,
    endpoint_url text default null,
-   content_encoding text default null
+   content_encoding text default null,
+   read_timeout integer default 60
 ) RETURNS int
 LANGUAGE plpython3u
 AS $$
@@ -86,6 +87,7 @@ AS $$
     s3 = boto3.resource(
         's3',
         region_name=region,
+        config=boto3.session.Config(read_timeout={read_timeout}),
         **aws_settings
     )
 
@@ -126,14 +128,15 @@ CREATE OR REPLACE FUNCTION aws_s3.table_import_from_s3(
    s3_info aws_commons._s3_uri_1,
    credentials aws_commons._aws_credentials_1,
    endpoint_url text default null,
-   content_encoding text default null
+   content_encoding text default null,
+   read_timeout integer default 60
 ) RETURNS INT
 LANGUAGE plpython3u
 AS $$
 
     plan = plpy.prepare(
-        'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) AS num_rows',
-        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT']
+        'SELECT aws_s3.table_import_from_s3($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) AS num_rows',
+        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER']
     )
     return plan.execute(
         [
@@ -146,8 +149,9 @@ AS $$
             credentials['access_key'],
             credentials['secret_key'],
             credentials['session_token'],
-	    endpoint_url,
-	    content_encoding
+            endpoint_url,
+            content_encoding,
+            read_timeout
         ]
     )[0]['num_rows']
 $$;
@@ -162,6 +166,7 @@ CREATE OR REPLACE FUNCTION aws_s3.query_export_to_s3(
     session_token text default null,
     options text default null, 
     endpoint_url text default null,
+    read_timeout integer default 60,
     OUT rows_uploaded bigint,
     OUT files_uploaded bigint,
     OUT bytes_uploaded bigint
@@ -199,6 +204,7 @@ AS $$
     s3 = boto3.client(
         's3',
         region_name=region,
+        config=boto3.session.Config(read_timeout={read_timeout}),
         **aws_settings
     )
 
@@ -233,6 +239,7 @@ CREATE OR REPLACE FUNCTION aws_s3.query_export_to_s3(
     credentials aws_commons._aws_credentials_1 default null,
     options text default null, 
     endpoint_url text default null,
+    read_timeout integer default 60,
     OUT rows_uploaded bigint,
     OUT files_uploaded bigint,
     OUT bytes_uploaded bigint
@@ -240,8 +247,8 @@ CREATE OR REPLACE FUNCTION aws_s3.query_export_to_s3(
 LANGUAGE plpython3u
 AS $$
     plan = plpy.prepare(
-        'SELECT * FROM aws_s3.query_export_to_s3($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT']
+        'SELECT * FROM aws_s3.query_export_to_s3($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+        ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER']
     )
     return plan.execute(
         [
@@ -253,7 +260,8 @@ AS $$
             credentials.get('secret_key') if credentials else None,
             credentials.get('session_token') if credentials else None,
             options,
-	        endpoint_url
+            endpoint_url,
+            read_timeout
         ]
     )
 $$;
