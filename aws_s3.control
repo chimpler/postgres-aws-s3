@@ -1,5 +1,5 @@
 # aws_s3 extension
 comment = 'aws s3 wrapper for non rds postgres'
-default_version = '0.0.1'
+default_version = '1.0.0'
 module_pathname = '$libdir/aws_s3'
 relocatable = true

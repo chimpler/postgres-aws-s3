@@ -1,5 +1,5 @@
 EXTENSION = aws_s3        # the extensions name
-DATA = aws_s3--0.0.1.sql  # script files to install
+DATA = aws_s3--1.0.0.sql  # script files to install
 
 # postgres build stuff
 PG_CONFIG = pg_config
