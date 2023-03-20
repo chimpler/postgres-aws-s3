@@ -199,8 +199,19 @@ AS $$
             module_cache[module_name] = _module
             return _module
 
+    def file_exists(bucket, file_path, s3_client):
+        try:
+            s3_client.head_object(Bucket=bucket, Key=file_path)
+            return True
+        except:
+            return False
+
+    def get_unique_file_path(base_name, counter, extension):
+        return f"{base_name}_part{counter}{extension}"
+
     boto3 = cache_import('boto3')
     tempfile = cache_import('tempfile')
+    re = cache_import("re")
 
     plan = plpy.prepare("select name, current_setting('aws_s3.' || name, true) as value from (select unnest(array['access_key_id', 'secret_access_key', 'session_token', 'endpoint_url']) as name) a");
     default_aws_settings = {
@@ -222,6 +233,15 @@ AS $$
         **aws_settings
     )
 
+    # generate unique file path
+    file_path_parts = re.match(r'^(.*?)(\.[^.]*$|$)', file_path)
+    base_name = file_path_parts.group(1)
+    extension = file_path_parts.group(2)
+    counter = 0
+    while file_exists(bucket, get_unique_file_path(base_name, counter, extension), s3):
+        counter += 1
+    unique_file_path = get_unique_file_path(base_name, counter, extension)
+
     with tempfile.NamedTemporaryFile() as fd:
         plan = plpy.prepare(
             "COPY ({query}) TO '{filename}' {options}".format(
@@ -241,7 +261,7 @@ AS $$
             num_lines += buffer.count(b'\n')
             size += len(buffer)
         fd.seek(0)
-        s3.upload_fileobj(fd, bucket, file_path)
+        s3.upload_fileobj(fd, bucket, unique_file_path)
         if 'HEADER TRUE' in options.upper():
             num_lines -= 1
         yield (num_lines, 1, size)
